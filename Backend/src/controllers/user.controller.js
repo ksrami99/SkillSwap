@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { SwapRequest } from "../models/swapRequest.model.js";
+import SwapRequest from "../models/swapRequest.model.js";
 
 // Get all public users with optional filtering
 export const getAllPublicUsers = asyncHandler(async (req, res) => {

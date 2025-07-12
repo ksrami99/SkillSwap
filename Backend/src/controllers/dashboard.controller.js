@@ -1,9 +1,9 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { ApiError } from "../utils/ApiError.js";
-import { User } from "../models/user.model.js";
-import { SwapRequest } from "../models/swapRequest.model.js";
-import { Feedback } from "../models/feedback.model.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import ApiError from "../utils/ApiError.js";
+import User from "../models/user.model.js";
+import SwapRequest from "../models/swapRequest.model.js";
+import Feedback from "../models/feedback.model.js";
 
 const getDashboardStats = asyncHandler(async (req, res) => {
   const userId = req.user._id;
