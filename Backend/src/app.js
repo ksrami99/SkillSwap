@@ -30,4 +30,13 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/swaps", swapRoutes);
 app.use("/api/v1/feedbacks", feedbackRoutes);
 
+// Global error handling middleware
+import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
+
+// 404 handler for undefined routes (must be after all routes)
+app.use(notFoundHandler);
+
+// Global error handler (must be last)
+app.use(errorHandler);
+
 export { app };

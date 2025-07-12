@@ -7,7 +7,6 @@ import {
   logout,
 } from "../controllers/auth.controller.js";
 import verifyToken from "../middlewares/auth.middleware.js";
-
 import { validate } from "../middlewares/validate.middleware.js";
 import { registerSchema, loginSchema } from "../validations/auth.validation.js";
 

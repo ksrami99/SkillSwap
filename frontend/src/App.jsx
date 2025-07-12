@@ -1,11 +1,30 @@
-import Home from "./pages/Home";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import Users from './pages/Users';
+import SwapRequests from './pages/SwapRequests';
+import FeedbackPage from './pages/FeedbackPage';
+import ProtectedRoute from './routes/ProtectedRoute';
+import Layout from './components/Layout';
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Home />
-    </div>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/requests" element={<SwapRequests />} />
+          <Route path="/feedback/:userId" element={<FeedbackPage />} />
+        </Route>
+      </Routes>
+    </Layout>
   );
 }
-
-export default App;
