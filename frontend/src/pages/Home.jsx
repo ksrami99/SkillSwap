@@ -52,7 +52,11 @@ export default function Home() {
 
   const fetchStats = async () => {
     try {
-      const { data } = await axios.get('/stats');
+      const { data } = await axios.get('/stats',{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      });
       setStats(data.data || { totalUsers: 0, activeSwaps: 0 });
     } catch (err) {
       console.error('Failed to fetch stats:', err);

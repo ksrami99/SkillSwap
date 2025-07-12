@@ -37,10 +37,14 @@ export default function Dashboard() {
     try {
       const [statsRes, requestsRes] = await Promise.all([
         axios.get('/dashboard/stats', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         }),
         axios.get('/dashboard/recent-requests', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         })
       ]);
       
