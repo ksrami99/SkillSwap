@@ -1,25 +1,21 @@
-import { Router } from "express";
+import express from "express";
 import {
-  changeCurrentPassword,
-  getCurrentUser,
-  loginUser,
-  logoutUser,
-  refreshAccessToken,
-  registerUser,
-  updateAccountDetails,
+  getAllPublicUsers,
+  getUserById,
+  updateProfile,
+  toggleProfileVisibility,
+  deleteAccount,
 } from "../controllers/user.controller.js";
-import verifyJWT from "../middlewares/auth.middleware.js";
-const router = Router();
+import verifyToken from "../middlewares/auth.middleware.js";
+import { updateProfileSchema } from "../validations/user.validation.js";
+import {validate} from "../middlewares/validate.middleware.js";
 
-router.route("/register").post(registerUser);
+const router = express.Router();
 
-router.route("/login").post(loginUser);
-
-// Secured Routes
-router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/refresh-token").post(refreshAccessToken);
-router.route("/change-password").post(verifyJWT, changeCurrentPassword);
-router.route("/current-user").get(verifyJWT, getCurrentUser);
-router.route("/update-account").patch(verifyJWT, updateAccountDetails);
+router.get("/", getAllPublicUsers);
+router.get("/:id", getUserById);
+router.put("/me",validate(updateProfileSchema), verifyToken, updateProfile);
+router.put("/me/visibility", verifyToken, toggleProfileVisibility);
+router.delete("/me", verifyToken, deleteAccount);
 
 export default router;
