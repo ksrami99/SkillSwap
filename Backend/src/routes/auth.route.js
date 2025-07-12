@@ -5,6 +5,7 @@ import {
   getCurrentUser,
   getAccessToken,
   logout,
+  updateProfile,
 } from "../controllers/auth.controller.js";
 import verifyToken from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
@@ -17,6 +18,6 @@ router.post("/login", validate(loginSchema), login);
 router.get("/me", verifyToken, getCurrentUser);
 router.post("/refresh-token", getAccessToken);
 router.post("/logout", logout);
-
+router.put("/profile", verifyToken, updateProfile);
 
 export default router;

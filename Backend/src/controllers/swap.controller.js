@@ -45,24 +45,48 @@ export const createSwapRequest = asyncHandler(async (req, res) => {
 });
 
 export const getMySwaps = asyncHandler(async (req, res) => {
+  const { page = 1 } = req.query;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
   const sent = await SwapRequest.find({ requester: req.user.id })
-    .populate("recipient", "name skillsOffered")
-    .sort("-createdAt");
+    .populate("recipient", "name skillsOffered location")
+    .sort("-createdAt")
+    .skip(skip)
+    .limit(limit);
 
   const received = await SwapRequest.find({ recipient: req.user.id })
-    .populate("requester", "name skillsOffered")
-    .sort("-createdAt");
+    .populate("requester", "name skillsOffered location")
+    .sort("-createdAt")
+    .skip(skip)
+    .limit(limit);
 
-  const totalRequests = sent.length + received.length;
+  // Add 'me' field to identify the current user
+  const sentWithMe = sent.map(request => ({
+    ...request.toObject(),
+    me: req.user.id
+  }));
+
+  const receivedWithMe = received.map(request => ({
+    ...request.toObject(),
+    me: req.user.id
+  }));
+
+  // Get total counts for pagination
+  const totalSent = await SwapRequest.countDocuments({ requester: req.user.id });
+  const totalReceived = await SwapRequest.countDocuments({ recipient: req.user.id });
+  const totalPages = Math.ceil(Math.max(totalSent, totalReceived) / limit);
+
+  const totalRequests = totalSent + totalReceived;
   
   if (totalRequests === 0) {
     return res.status(200).json(
-      new ApiResponse(200, { sent, received }, "You don't have any swap requests yet.")
+      new ApiResponse(200, { sent: sentWithMe, received: receivedWithMe, totalPages: 1 }, "You don't have any swap requests yet.")
     );
   }
 
   res.status(200).json(
-    new ApiResponse(200, { sent, received }, `Found ${totalRequests} swap request(s)`)
+    new ApiResponse(200, { sent: sentWithMe, received: receivedWithMe, totalPages }, `Found ${totalRequests} swap request(s)`)
   );
 });
 

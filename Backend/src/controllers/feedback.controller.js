@@ -12,34 +12,37 @@ export const giveFeedback = asyncHandler(async (req, res) => {
     throw ApiError.badRequest("You cannot give feedback to yourself.");
   }
 
-  const swap = await SwapRequest.findById(swapId);
-  if (!swap) {
-    throw ApiError.notFound("Swap request not found. It may have been deleted or doesn't exist.");
-  }
-  
-  if (swap.status !== "accepted") {
-    throw ApiError.badRequest("You can only give feedback for completed swaps that were accepted.");
-  }
+  // If swapId is provided, validate the swap
+  if (swapId) {
+    const swap = await SwapRequest.findById(swapId);
+    if (!swap) {
+      throw ApiError.notFound("Swap request not found. It may have been deleted or doesn't exist.");
+    }
+    
+    if (swap.status !== "accepted") {
+      throw ApiError.badRequest("You can only give feedback for completed swaps that were accepted.");
+    }
 
-  // Check if user is part of this swap
-  if (swap.requester.toString() !== req.user.id && swap.recipient.toString() !== req.user.id) {
-    throw ApiError.forbidden("You can only give feedback for swaps you participated in.");
+    // Check if user is part of this swap
+    if (swap.requester.toString() !== req.user.id && swap.recipient.toString() !== req.user.id) {
+      throw ApiError.forbidden("You can only give feedback for swaps you participated in.");
+    }
   }
 
   const alreadyGiven = await Feedback.findOne({
     from: req.user.id,
     to: userId,
-    swapId,
+    swapId: swapId || null,
   });
   
   if (alreadyGiven) {
-    throw ApiError.conflict("You have already submitted feedback for this swap.");
+    throw ApiError.conflict("You have already submitted feedback for this user.");
   }
 
   const feedback = await Feedback.create({
     from: req.user.id,
     to: userId,
-    swapId,
+    swapId: swapId || null,
     rating,
     comment,
   });

@@ -7,6 +7,7 @@ import verifyToken from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.post("/:userId/:swapId", verifyToken, validate(feedbackSchema), giveFeedback);
+router.post("/:userId", verifyToken, validate(feedbackSchema), giveFeedback);
 router.get("/:userId", getFeedbackForUser);
 
 export default router;
